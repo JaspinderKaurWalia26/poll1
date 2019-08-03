@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2013, Web Notes Technologies
+# For license information, please see license.txt
+
+from __future__ import unicode_literals
+
 app_name = "poll"
 app_title = "Poll"
 app_publisher = "Web Notes Technologies"
 app_description = "Website Poll"
-app_icon = "icon-ok-sign"
+app_icon = "fa fa-thumbs-up"
 app_color = "#8e44ad"
 app_email = "info@frappe.io"
 app_url = "https://frappe.io"
-app_version = "0.0.1"
+app_version = "1.0.1"
 
 # Includes in <head>
 # ------------------
@@ -35,6 +41,10 @@ app_version = "0.0.1"
 
 # automatically create page for each record of this doctype
 website_generators = ["Poll"]
+
+website_route_rules = [
+    {"from_route": "/poll", "to_route": "Poll"},
+]
 
 # Installation
 # ------------
@@ -97,4 +107,3 @@ website_generators = ["Poll"]
 # -------
 
 # before_tests = "poll.install.before_tests"
-

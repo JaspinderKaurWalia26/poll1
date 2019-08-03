@@ -46,27 +46,33 @@ This Poll is Inactive. You cannot vote on this Poll
 {% endfor %}
 </ul>
 
-<script>
-$(".btn-vote").on("click", function() {
-	$.ajax({
-		method: "POST",
-		url:"/api/method/poll.poll.doctype.poll.poll.add_vote",
-		data: {
-			option_name: $(this).attr("data-option-name")
-		},
-		statusCode: {
-			200: function(data) {
-				frappe.msgprint(data.message);
-				setTimeout(function() { window.location.reload(); }, 2000);
-			},
-			500: function(data) {
-				console.log(data.responseJSON.exc);
-			},
-			417: function(data) {
-				console.log(data.responseJSON.exc);
-			}
-		}
-	});
-})
+<script type="text/javascript" 
+	src="/assets/frappe/js/lib/jquery/jquery.min.js"></script>
+
+<script type="text/javascript">
+	(async () => {
+
+		jQuery(".btn-vote").on("click", function() {
+			jQuery.ajax({
+				method: "POST",
+				url:"/api/method/poll.poll.doctype.poll.poll.add_vote",
+				data: {
+					option_name: $(this).attr("data-option-name")
+				},
+				statusCode: {
+					200: function(data) {
+						frappe.msgprint(data.message);
+						setTimeout(function() { window.location.reload(); }, 2000);
+					},
+					500: function(data) {
+						console.log(data.responseJSON.exc);
+					},
+					417: function(data) {
+						console.log(data.responseJSON.exc);
+					}
+				}
+			});
+		});
+	})();
 </script>
 {% endblock %}

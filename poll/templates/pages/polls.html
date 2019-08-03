@@ -19,7 +19,7 @@
             {% for poll in listed_polls %}
                 {% if (poll.poll_status == "Active") %}
                 <li class="list-unstyled" style="padding-top: 10px; padding-bottom: 10px; padding-left: 20px;">
-                            <a href="/{{poll.parent_website_route}}/{{ poll.page_name }}"><strong>{{ poll.title }}</strong></a>
+                            <a href="/poll/{{ poll.page_name }}"><strong>{{ poll.title }}</strong></a>
                                 <p class="text-muted small">{{ poll.description }}</p>
                 </li>
                 {% endif %}
@@ -36,7 +36,7 @@
             {% for poll in listed_polls %}
                 {% if (poll.poll_status == "Inactive") %}
                 <li class="list-unstyled" style="padding-top: 10px; padding-bottom: 10px; padding-left: 20px;">
-                            <a href="/{{poll.parent_website_route}}/{{ poll.page_name }}"><strong>{{ poll.title }}</strong></a>
+                            <a href="/{{ 'poll' }}/{{ poll.page_name }}"><strong>{{ poll.title }}</strong></a>
                                 <p class="text-muted small">{{ poll.description }}</p>
                 </li>
                 {% endif %}

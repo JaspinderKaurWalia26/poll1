@@ -4,7 +4,7 @@ def get_data():
 	return {
 		"Poll": {
 			"color": "#8e44ad",
-			"icon": "icon-ok-sign",
+			"icon": "fa fa-thumbs-up",
 			"type": "module",
 			"label": _("Poll")
 		}

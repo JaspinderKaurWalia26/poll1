@@ -1,0 +1,1 @@
+frappe.mspgprint("hello")
