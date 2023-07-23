@@ -1,7 +1,270 @@
 {% extends "templates/web.html" %}
 
+
+
+{% block title %}{{ title }}{% endblock %}
+
+
+
 {% block page_content %}
-<h1>{{ title }}</h1>
+
+<!-- no-sidebar -->
+
+<div class="page-breadcrumbs" data-html-block="breadcrumbs">
+
+{%- if breadcrumbs is defined -%}{{ breadcrumbs }}{%- endif -%}
+
+</div>
+
+
+
+{% if (status == "Inactive") %}
+
+<div class="text-muted">
+
+This Poll is Inactive. You cannot vote on this Poll
+
+</div>
+
+{% endif %}
+
+
+
+<p class="lead">{{ description }}</p>
+
+
+
+<ul class="list-group" style="max-width: 600px;">
+
+{% for option in sorted_options %}
+
+	<li class="list-group-item" style="padding-top: 20px; padding-bottom: 20px;">
+
+		<div class="row">
+
+			<div class="col-sm-2 text-center">
+
+				<h3 style="margin: 0px;" id="{{ option.option }}">{{ (option.votes or 0) + (option.previous_votes or 0) }}</h3>
+
+				<p class="text-muted small">{{ "Vote" if option.votes==1 else "Votes" }}</p>
+
+			</div>
+
+			<div class="col-sm-8">
+
+				<strong>{{ option.option }}</strong>
+
+				{% if option.description -%}
+
+					<p class="text-muted small">{{ option.description }}</p>{% endif %}
+
+			</div>
+
+			{% if (status == "Active") %}
+
+			<div class="container">
+
+				<button class="btn vote-btn" data-option="{{ option.option }}">Vote</button>
+
+				<div class="message"></div>
+
+			</div>
+
+			{% endif %}
+
+		</div>
+
+	</li>
+
+{% endfor %}
+
+</ul>
+
+<style>
+
+		body {
+
+			font-family: Arial, sans-serif;
+
+			margin: 0;
+
+			padding: 0;
+
+		}
+
+
+
+		
+
+
+
+		.container {
+
+			display: flex;
+
+			flex-direction: column;
+
+			align-items: center;
+
+			margin-top: 30px;
+
+		}
+
+
+
+		.btn {
+
+			background-color: #4CAF50;
+
+			color: white;
+
+			padding: 14px 20px;
+
+			border: none;
+
+			cursor: pointer;
+
+			width: 100%;
+
+			margin-bottom: 10px;
+
+			font-size: 18px;
+
+		}
+
+
+
+		.btn:hover {
+
+			opacity: 0.8;
+
+		}
+
+
+
+		.message {
+
+			color: #4CAF50;
+
+			font-weight: bold;
+
+			margin-top: 20px;
+
+			text-align: center;
+
+		}
+
+	</style>
+
+
+
+<script>
+
+	const voteBtns = document.querySelectorAll(".vote-btn");
+
+	voteBtns.forEach(btn => {
+
+		btn.addEventListener("click", () => {
+
+			const option = btn.dataset.option;
+
+			// Update the vote count on the page
+
+			const votesEl = document.getElementById(option);
+
+			votesEl.textContent = parseInt(votesEl.textContent) + 1;
+
+			// Send the vote data to the server
+
+			fetch("/vote", {
+
+				method: "POST",
+
+				body: JSON.stringify({ option: option }),
+
+				headers: {
+
+					"Content-Type": "application/json"
+
+				}
+
+			})
+
+			.then(response => {
+
+				if (!response.ok) {
+
+					throw new Error(response.statusText);
+
+				}
+
+			})
+
+			.catch(error => {
+
+				console.error("Error:", error);
+
+				// Revert the vote count on the page
+
+				votesEl.textContent = parseInt(votesEl.textContent) - 1;
+
+				// Display an error message
+
+				const message = btn.parentElement.querySelector(".message");
+
+				message.textContent = "An error occurred while processing your vote.";
+
+			});
+
+		});
+
+	});
+
+	
+
+	
+
+</script>
+
+
+
 {% endblock %}
 
-<!-- this is a sample default web page template -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
