@@ -9,20 +9,21 @@ from poll.poll.doctype.poll.poll import DuplicateVoteError
 from poll.poll.doctype.poll.poll import InactivePollStatusError
 
 class PollVote(Document):
-	def validate(self):
-		self.ip = frappe.get_request_header('REMOTE_ADDR', None) or \
-			frappe.get_request_header('X-Forwarded-For') or '127.0.0.1'
-		duplicate = frappe.db.get_value("Poll Vote", {"ip": self.ip, "poll": self.poll})
-		status = frappe.db.get_value("Poll", {"name": self.name}, "poll_status")
+    def validate(self):
+        self.ip = frappe.get_request_header('REMOTE_ADDR', None) or \
+                  frappe.get_request_header('X-Forwarded-For') or '127.0.0.1'
+        duplicate = frappe.db.get_value("Poll Vote", {"ip": self.ip, "poll": self.poll})
+        status = frappe.db.get_value("Poll", {"name": self.poll}, "poll_status")  # Corrected the field name to "poll" instead of "name"
 
-		if duplicate:
-			raise DuplicateVoteError
+        if duplicate:
+            raise DuplicateVoteError("You have already voted in this poll.")
 
-		if status == "Inactive":
-			raise InactivePollStatusError
+        if status == "Inactive":
+            raise InactivePollStatusError("This poll is currently inactive.")
 
-	def on_update(self):
-		poll = frappe.get_doc("Poll", self.poll)
-		option = filter(lambda d: d.name == self.option_name, poll.poll_options)[0]
-		option.votes = len(frappe.db.get_values("Poll Vote", {"option_name": self.option_name}))
-		poll.save(ignore_permissions=True)
+    def on_update(self):
+        poll = frappe.get_doc("Poll", self.poll)
+        option = next((d for d in poll.poll_options if d.name == self.option_name), None)
+        if option:
+            option.votes = len(frappe.get_all("Poll Vote", filters={"option_name": self.option_name}))
+            poll.save(ignore_permissions=True)
